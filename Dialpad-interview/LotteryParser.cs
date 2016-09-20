@@ -106,11 +106,12 @@ namespace DialpadTest
             _numberListSoFar = new List<LotteryNumber>();
         }
 
-        private void restoreSavedState(ParserState savedState)
+        private void RestoreSavedState(ParserState savedState)
         {
             _parserState = savedState;
             // restore list size to savedState.NumbersSeen
-            _numberListSoFar.RemoveRange(savedState.NumbersSeen, _numberListSoFar.Count - savedState.NumbersSeen);
+            if(savedState.NumbersSeen != _numberListSoFar.Count)
+                _numberListSoFar.RemoveRange(savedState.NumbersSeen, _numberListSoFar.Count - savedState.NumbersSeen);
         }
 
         private void MoveNext()
@@ -152,12 +153,12 @@ namespace DialpadTest
             bool res;
 
             //try one digit and matching the rest of it
-            restoreSavedState(savedState);
+            RestoreSavedState(savedState);
             res = ParseOneDigit();
             if (res) return true;
 
             // if first option doesn't work, clear the state from that attempt and try with 2 digits
-            restoreSavedState(savedState);
+            RestoreSavedState(savedState);
             res = ParseTwoDigits();
             if (res) return true;
 
