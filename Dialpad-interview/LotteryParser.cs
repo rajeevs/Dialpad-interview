@@ -28,6 +28,11 @@ namespace DialpadTest
                 throw new ArgumentOutOfRangeException(nameof(digits));
         }
 
+        public string ToString()
+        {
+            return new string(_rawNumber.ToArray());
+        }
+
         /*
         public LotteryNumber(char digit)
         {
@@ -142,7 +147,7 @@ namespace DialpadTest
 
         private int GetRemainingLength()
         {
-            return this._input.Length - this._parserState.NextIndex - 1;
+            return this._input.Length - this._parserState.NextIndex;
         }
 
         private char GetNextToken()
@@ -153,6 +158,11 @@ namespace DialpadTest
         private bool ValidateFinalState()
         {
             return _numberListSoFar.Count == ExpectedLength && GetRemainingLength() == 0;
+        }
+
+        private char NextToken
+        {
+            get { return this.GetNextToken(); }
         }
 
         public bool ParseLotteryTicket()
@@ -174,7 +184,7 @@ namespace DialpadTest
             // if first option doesn't work, clear the state from that attempt and try with 2 digits
             restoreSavedState(savedState);
             res = ParseTwoDigits();
-            if (res) return true;
+            //if (res) return true;
 
             return false;
         }
