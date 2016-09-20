@@ -9,11 +9,6 @@ namespace DialpadTest
         private readonly int _number;
         private readonly List<char> _rawNumber;
 
-        public static bool IsDigit(char digit)
-        {
-            return (digit >= '0' && digit <= '9');
-        }
-
         public LotteryNumber(params char[] digits)
         {
             if(!digits.All(c => IsDigit(c)))
@@ -29,6 +24,14 @@ namespace DialpadTest
             return new string(_rawNumber.ToArray());
         }
 
+        public bool Equals(LotteryNumber other)
+        {
+            if (other == null)
+                return false;
+
+            return this._number == other._number;
+        }
+
         private int ConvertToDecimal()
         {
             int num = 0;
@@ -41,15 +44,14 @@ namespace DialpadTest
             return num;
         }
 
-
         private bool Validate()
         {
             return _number >= 1 && _number <= 59;
         }
 
-        public bool Equals(LotteryNumber other)
+        public static bool IsDigit(char digit)
         {
-            return this._number == other._number;
+            return (digit >= '0' && digit <= '9');
         }
     }
 
