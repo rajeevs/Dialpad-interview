@@ -28,7 +28,7 @@ namespace DialpadTest
                 throw new ArgumentOutOfRangeException(nameof(digits));
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return new string(_rawNumber.ToArray());
         }
