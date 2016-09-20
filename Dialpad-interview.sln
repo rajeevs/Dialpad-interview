@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dialpad-interview", "Dialpad-interview\Dialpad-interview.csproj", "{EC7312F4-397E-43E8-B237-E1FDA2663318}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotteryTests", "LotteryTests\LotteryTests.csproj", "{AA4D3640-564E-4B4E-827E-170D5718B2DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC7312F4-397E-43E8-B237-E1FDA2663318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7312F4-397E-43E8-B237-E1FDA2663318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7312F4-397E-43E8-B237-E1FDA2663318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7312F4-397E-43E8-B237-E1FDA2663318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA4D3640-564E-4B4E-827E-170D5718B2DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA4D3640-564E-4B4E-827E-170D5718B2DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA4D3640-564E-4B4E-827E-170D5718B2DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA4D3640-564E-4B4E-827E-170D5718B2DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
