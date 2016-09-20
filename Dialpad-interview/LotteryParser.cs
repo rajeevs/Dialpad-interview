@@ -48,10 +48,6 @@ namespace DialpadTest
         /// <returns>a list of 7 lottery numbers or null</returns>
         public IEnumerable<LotteryNumber> GetLotteryTicket(string rawNumber)
         {
-            // split into 7 lottery numbers
-            // the numbers should be between 1 and 59
-            // numbers should be unique
-
             if (String.IsNullOrWhiteSpace(rawNumber))
             {
                 throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber, "Argument is null or whitespaces");
@@ -174,7 +170,7 @@ namespace DialpadTest
 
         /// <summary>
         /// Main parsing function. Uses backtracking and recursion to parse for a valid lottery ticket
-        /// split
+        /// split. This function is not thread-safe
         /// </summary>
         /// <returns>true if it is a valid lottery number (this._numbersSoFar has the actual final split)</returns>
         private bool ParseLotteryTicket()
