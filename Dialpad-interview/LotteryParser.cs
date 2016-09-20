@@ -198,7 +198,7 @@ namespace DialpadTest
                 var res = MatchDigits(dCtr, out digits);
                 if (!res) return false;
 
-                res = ValidateAddLotteryNumber(digits);
+                res = ValidateAndAddLotteryNumber(digits);
                 if(!res) continue;
 
                 res = ParseLotteryTicket();
@@ -251,7 +251,7 @@ namespace DialpadTest
         /// </summary>
         /// <param name="digits">digits to use to form number</param>
         /// <returns>true if success, false otherwise</returns>
-        private bool ValidateAddLotteryNumber(char[] digits)
+        private bool ValidateAndAddLotteryNumber(char[] digits)
         {
             LotteryNumber num;
             var res = LotteryNumber.Create(out num, digits);
