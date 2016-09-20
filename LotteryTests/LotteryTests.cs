@@ -49,8 +49,43 @@ namespace LotteryTests
             CheckParseResult(res, expected);
         }
 
+
+        [TestMethod]
+        public void TestDoubleDigitsUnique()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("1123456");
+            string[] expected = null;
+            CheckParseResult(res, expected);
+
+            res = lp.GetLotteryTicket("11234567");
+            expected = new string[] { "1", "12", "3", "4", "5", "6", "7"};
+            CheckParseResult(res, expected);
+        }
+
+        [TestMethod]
+        public void TestQuestionInput()
+        {
+            string[] inputs = {"1", "42", "100848", "4938532894754", "1234567", "472844278465445"};
+            string[][] expecteds =
+            {
+                null,
+                null,
+                null,
+                new string[] { "49", "38", "53", "28", "9", "47", "54"},
+                new string[] { "1", "2", "3", "4", "5", "6", "7"},
+                null
+            };
+        }
+
         private void CheckParseResult(IEnumerable<LotteryNumber> num, string[] expected)
         {
+            if (expected == null)
+            {
+                Assert.AreEqual(null, num);
+                return;
+            }
+
             Assert.AreNotEqual(null, num);
 
             var actual = num.Select(x => x.ToString()).ToArray();

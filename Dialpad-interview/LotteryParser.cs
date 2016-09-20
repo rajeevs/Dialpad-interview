@@ -50,6 +50,11 @@ namespace DialpadTest
         {
             return _number >= 1 && _number <= 59;
         }
+
+        public bool Equals(LotteryNumber other)
+        {
+            return this._number == other._number;
+        }
     }
 
     internal struct ParserState
@@ -171,7 +176,9 @@ namespace DialpadTest
 
             if (!res) return false;
 
-            AddLotteryNumber(new LotteryNumber(this._lastToken));
+            var num = new LotteryNumber(this._lastToken);
+            if (_numberListSoFar.Find(n => n.Equals(num)) != null) return false;
+            AddLotteryNumber(num);
 
             return ParseLotteryTicket();
         }
@@ -195,7 +202,10 @@ namespace DialpadTest
             if (!res) return false;
             var onesdigit = this._lastToken;
 
-            AddLotteryNumber(new LotteryNumber(tensdigit, onesdigit));
+            var num = new LotteryNumber(tensdigit, onesdigit);
+            if (_numberListSoFar.Find(n => n.Equals(num)) != null) return false;
+
+            AddLotteryNumber(num);
 
             return ParseLotteryTicket();
         }
