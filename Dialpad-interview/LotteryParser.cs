@@ -27,6 +27,7 @@ namespace DialpadTest
 
         // constants
 
+        #region Public methods
         /// <summary>
         /// Returns possible lottery splits for a list of numeric strings
         /// </summary>
@@ -70,6 +71,8 @@ namespace DialpadTest
             bool res = ParseLotteryTicket();
             return res? _numberListSoFar : null;
         }
+
+        #endregion
 
         #region State
         private ParserState _parserState;
@@ -152,7 +155,7 @@ namespace DialpadTest
 
         // The parsing methodology is inspired by a Top-down left recursive descent parser design with
         // backtracking
-        // The BNF grammar is 
+        // The EBNF grammar is 
         // LOTTERY_TICKET   -> {DIGIT}1,2 LOTTERY_TICKET                
         //                  -> {}  
         // Basic idea is we try as many digits as MaxDigits and then parse rest of LOTTERY_TICKET 
@@ -182,46 +185,29 @@ namespace DialpadTest
                 return ValidateFinalState();
             }
 
-            var initialState = _parserState; // to help with backtracking
+            var digits = new List<char>();
 
             for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)
-            {
-                // restore to beginning of this function. Redundant 1st time but keeping it for simplicity
-                RestoreSavedState(initialState);
-
-                char[] digits;
-                var res = MatchDigits(dCtr, out digits);
-                if (!res) return false;
-
-                res = ValidateAndAddLotteryNumber(digits);
-                if(!res) continue;
-
-                res = ParseLotteryTicket();
-                if (res) return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Matches a single digit, and moves token forwards if it is a digit
-        /// </summary>
-        /// <returns>true if next char is digit, else false</returns>
-        private bool MatchDigits(uint times, out char[] digits)
-        {
-            digits = null;
-            var matchedDigits = new List<char>();
-            for (int dCtr = 0; dCtr < times; dCtr++)
             {
                 var res = MatchDigit();
                 if (!res) return false;
 
-                matchedDigits.Add(_lastToken);
+                digits.Add(this._lastToken);
+
+                var initialState = _parserState; // to help with backtracking
+
+                if (ValidateAndAddLotteryNumber(digits.ToArray()))
+                {
+                    res = ParseLotteryTicket();
+                    if(res) return true;
+                    // failed to parse
+                }
+
+                // restore to after parsing digit but before adding number
+                RestoreSavedState(initialState);
             }
-
-            digits = matchedDigits.ToArray();
-            return true;
+            return false;
         }
-
 
         /// <summary>
         /// Matches a single digit, and moves token forwards if it is a digit
