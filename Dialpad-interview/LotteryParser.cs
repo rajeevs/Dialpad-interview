@@ -4,71 +4,9 @@ using System.Linq;
 
 namespace DialpadTest
 {
-    public class LotteryNumber
-    {
-        private readonly int _number;
-        private readonly List<char> _rawNumber;
-
-        private LotteryNumber(params char[] digits)
-        {
-            if(!digits.All(c => IsDigit(c)))
-                throw new ArgumentOutOfRangeException(nameof(digits));
-            this._rawNumber = new List<char>(digits);
-            this._number = ConvertToDecimal();
-            if(!this.Validate())
-                throw new ArgumentOutOfRangeException(nameof(digits));
-        }
-
-        public static bool Create(out LotteryNumber num, params char[] digits)
-        {
-            try
-            {
-                num = new LotteryNumber(digits);
-                return true;
-            }
-            catch (Exception)
-            {
-                num = null;
-                return false;
-            }
-        }
-
-        public override string ToString()
-        {
-            return new string(_rawNumber.ToArray());
-        }
-
-        public bool Equals(LotteryNumber other)
-        {
-            if (other == null)
-                return false;
-
-            return this._number == other._number;
-        }
-
-        private int ConvertToDecimal()
-        {
-            int num = 0;
-            foreach (var digit in this._rawNumber)
-            {
-                var d = digit - '0';
-                num = num*10 + d;
-            }
-
-            return num;
-        }
-
-        private bool Validate()
-        {
-            return _number >= 1 && _number <= 59;
-        }
-
-        public static bool IsDigit(char digit)
-        {
-            return (digit >= '0' && digit <= '9');
-        }
-    }
-
+    /// <summary>
+    /// Parses the lottery number
+    /// </summary>
     public class LotteryParser
     {
         /// <summary>
@@ -88,16 +26,6 @@ namespace DialpadTest
         }
 
         // constants
-
-        /// <summary>
-        ///  Expected length of lottery ticket
-        /// </summary>
-        private const int ExpectedLength = 7;
-
-        /// <summary>
-        /// Maximum digits in a lottery number
-        /// </summary>
-        private const int MaxDigits = 2;
 
         /// <summary>
         /// Returns possible lottery splits for a list of numeric strings
@@ -129,7 +57,7 @@ namespace DialpadTest
                 throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber, "Argument is null or whitespaces");
             }
 
-            if (rawNumber.Length < ExpectedLength || rawNumber.Length > MaxDigits * ExpectedLength)
+            if (rawNumber.Length < LotteryNumberConstants.ExpectedLength || rawNumber.Length > LotteryNumberConstants.MaxDigits * LotteryNumberConstants.ExpectedLength)
             {
                 // too long or too short
                 return null;
@@ -216,7 +144,7 @@ namespace DialpadTest
         /// <returns>true if both conditions hold, else false</returns>
         private bool ValidateFinalState()
         {
-            return _numberListSoFar.Count == ExpectedLength && GetRemainingLength() == 0;
+            return _numberListSoFar.Count == LotteryNumberConstants.ExpectedLength && GetRemainingLength() == 0;
         }
 
         /// <summary>
@@ -255,7 +183,7 @@ namespace DialpadTest
         /// <returns>true if it is a valid lottery number (this._numbersSoFar has the actual final split)</returns>
         private bool ParseLotteryTicket()
         {
-            if (_numberListSoFar.Count == LotteryParser.ExpectedLength ||
+            if (_numberListSoFar.Count == LotteryNumberConstants.ExpectedLength ||
                 this.GetRemainingLength() == 0)
             {
                 // termination condition: we have reached max length or there are more characters to process
