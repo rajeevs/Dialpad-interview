@@ -190,85 +190,48 @@ namespace DialpadTest
                 return ValidateFinalState();
             }
 
-            var savedState = _parserState; // to help with backtracking
-            bool res;
+            var initialState = _parserState; // to help with backtracking
 
-            //try one digit and matching the rest of it
-            RestoreSavedState(savedState); // don't need to do this but doing so for symmetry
-            res = ParseOneDigit();
-            if (res) return true;
+            char[] digits;
+            for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)
+            {
+                // restore to beginning of this function
+                RestoreSavedState(initialState);
 
-            // if first option doesn't work, clear the state from that attempt and try with 2 digits
-            RestoreSavedState(savedState);
-            res = ParseTwoDigits();
-            if (res) return true;
+                var res = MatchDigits(dCtr, out digits);
+                if (!res) return false;
+
+                res = ValidateAddLotteryNumber(digits);
+                if(!res) continue;
+
+                res = ParseLotteryTicket();
+                if (res) return true;
+            }
 
             return false;
-        }
-
-        /// <summary>
-        /// Attempt to parse one digit and then the rest of the string
-        /// </summary>
-        /// <returns></returns>
-        private bool ParseOneDigit()
-        {
-            // MatchDigit   { Do unique checks }
-            // ParseRest
-
-            // Match any digit
-            bool res = MatchDigit();
-            if (!res) return false;
-
-            // ACTION associated with digit
-            LotteryNumber num;
-            res = LotteryNumber.Create(out num, this._lastToken);
-            if (!res) return false;
-            if (!AddLotteryNumber(num)) return false;
-
-            // parse rest of the rule
-            // Technically this is a tail-recursion split across 2 functions and can be converted to iteration
-            return ParseLotteryTicket();
-        }
-
-        /// <summary>
-        /// Attempt to parse 2 digits (between 1 and 59)and then the rest of the string
-        /// </summary>
-        /// <returns>true if can parse 2 digits immediately and then rest of the ticket succesfully</returns>
-        private bool ParseTwoDigits()
-        {
-            // Match digit under 5
-            // Match any digit
-            // ParseRestOfString
-
-            bool res;
             
-            res = MatchDigitUnder5();
-            if (!res) return false;
-            var tensdigit = this._lastToken;
-
-            res = MatchDigit();
-            if (!res) return false;
-            var onesdigit = this._lastToken;
-
-            LotteryNumber num;
-            res = LotteryNumber.Create(out num, tensdigit, onesdigit);
-            if (!res) return false;
-            if (!AddLotteryNumber(num)) return false;
-
-            // parse rest of the rule
-            // Technically this is a tail-recursion split across 2 functions and can be converted to iteration
-            return ParseLotteryTicket();
         }
 
         /// <summary>
-        /// Check if next char is a digit under 5 and moves forward in input
+        /// Matches a single digit, and moves token forwards if it is a digit
         /// </summary>
-        /// <returns>true if next character is digit under 5, else false</returns>
-        private bool MatchDigitUnder5()
+        /// <returns>true if next char is digit, else false</returns>
+        private bool MatchDigits(uint times, out char[] digits)
         {
-            var res = MatchDigit();
-            return this._lastToken <= '5';
+            digits = null;
+            var matchedDigits = new List<char>();
+            for (int dCtr = 0; dCtr < times; dCtr++)
+            {
+                var res = MatchDigit();
+                if (!res) return false;
+
+                matchedDigits.Add(this._lastToken);
+            }
+
+            digits = matchedDigits.ToArray();
+            return true;
         }
+
 
         /// <summary>
         /// Matches a single digit, and moves token forwards if it is a digit
@@ -286,16 +249,36 @@ namespace DialpadTest
             return true;
         }
 
-        #endregion 
+        #endregion
 
+        /// <summary>
+        /// Validate and add number created using digits
+        /// </summary>
+        /// <param name="digits">digits to use to form number</param>
+        /// <returns>true if success, false otherwise</returns>
+        private bool ValidateAddLotteryNumber(char[] digits)
+        {
+            LotteryNumber num;
+            var res = LotteryNumber.Create(out num, digits);
+            if (!res) return false;
+            return AddLotteryNumber(num);
+        }
+
+        /// <summary>
+        /// Adds a lottery number to the _numbersSoFar list if it is unique
+        /// </summary>
+        /// <param name="num">number to add</param>
+        /// <returns>true if unique, false otherwise</returns>
         private bool AddLotteryNumber(LotteryNumber num)
         {
+            if(num == null)
+                throw new ArgumentNullException(nameof(num));
+
             //do unique check
             if (_numberListSoFar.Find(n => n.Equals(num)) != null) return false;
             this._numberListSoFar.Add(num);
             _parserState.NumbersSeen += 1;
             return true;
         }
-
     }
 }
