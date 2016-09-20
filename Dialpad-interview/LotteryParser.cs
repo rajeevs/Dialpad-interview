@@ -157,21 +157,20 @@ namespace DialpadTest
         // The parsing methodology is inspired by a Top-down left recursive descent parser design with
         // backtracking
         // The BNF grammar is 
-        // LOTTERY_TICKET   -> DIGIT LOTTERY_TICKET                
-        //                  -> DIGIT_UNDER_5  DIGIT LOTTERY_TICKET
+        // LOTTERY_TICKET   -> {DIGIT}1,2 LOTTERY_TICKET                
         //                  -> {}  
-        // Basic idea is we have a function for each Rule and LOTTERY_TICKET has 2 rules for evaluation
-        // and it attempts them in order. If the 1st rule fails, then we try the second one
+        // Basic idea is we try as many digits as MaxDigits and then parse rest of LOTTERY_TICKET 
+        // If parsing rest of string fails, we backtrack, restore state and try out a different sized digit
         //
-        // Also, we have yacc style embedded actions that are performed along with parsing
+        // In between parsing, we have yacc styled actions
         // ex:
-        // LOTTERY_TICKET -> DIGIT_UNDER_5  DIGIT   
-        //                   { // build number using last 2 digits, check if it has been seen already
+        // LOTTERY_TICKET ->  DIGIT  <1,2>
+        //                   { // build number using last 1-2 digits, check if it has been seen already
         //                      // add to the list }
         //                  LOTTERY_TICKET
         //                
-        // We save parsing state before the rule while trying the 2 rule evaluations and restore state when a particular
-        // search doesn't pan out
+        // We save parsing state before work starts while trying the various digit possibilities and restore state when a particular
+        // recursive call doesn't pan out
 
         /// <summary>
         /// Main parsing function. Uses backtracking and recursion to parse for a valid lottery ticket
