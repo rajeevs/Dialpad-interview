@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DialpadTest
 {
@@ -13,11 +11,11 @@ namespace DialpadTest
 
         private LotteryNumber(params char[] digits)
         {
-            if (!digits.All(c => IsDigit(c)))
+            if (!digits.All(IsDigit))
                 throw new ArgumentOutOfRangeException(nameof(digits));
-            this._rawNumber = new List<char>(digits);
-            this._number = ConvertToDecimal();
-            if (!this.Validate())
+            _rawNumber = new List<char>(digits);
+            _number = ConvertToDecimal();
+            if (!Validate())
                 throw new ArgumentOutOfRangeException(nameof(digits));
         }
 
@@ -42,16 +40,13 @@ namespace DialpadTest
 
         public bool Equals(LotteryNumber other)
         {
-            if (other == null)
-                return false;
-
-            return this._number == other._number;
+            return _number == other?._number;
         }
 
         private int ConvertToDecimal()
         {
             int num = 0;
-            foreach (var digit in this._rawNumber)
+            foreach (var digit in _rawNumber)
             {
                 var d = digit - '0';
                 num = num * 10 + d;

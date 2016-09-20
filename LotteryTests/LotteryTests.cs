@@ -16,7 +16,7 @@ namespace LotteryTests
             var lp = new LotteryParser();
             try
             {
-                var res = lp.GetLotteryTicket("abcdefgh");
+                lp.GetLotteryTicket("abcdefgh");
                 Assert.Fail();
             }
             catch(ArgumentException)
@@ -61,7 +61,7 @@ namespace LotteryTests
             var lp = new LotteryParser();
             var res = lp.GetLotteryTicket("1123456");
             string[] expected = null;
-            CheckParseResult(res, expected);
+            CheckParseResult(res, null);
 
             res = lp.GetLotteryTicket("11234567");
             expected = new string[] { "1", "12", "3", "4", "5", "6", "7"};

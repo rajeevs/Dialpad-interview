@@ -37,7 +37,7 @@ namespace DialpadTest
             if(rawNumbers == null)
                 throw new ArgumentNullException(nameof(rawNumbers));
 
-            var outputs = rawNumbers.Select(num => this.GetLotteryTicket(num));
+            var outputs = rawNumbers.Select(GetLotteryTicket);
             return outputs;
         }
 
@@ -63,17 +63,16 @@ namespace DialpadTest
                 return null;
             }
 
-            if (!rawNumber.All(d => LotteryNumber.IsDigit(d)))
+            if (!rawNumber.All(LotteryNumber.IsDigit))
             {
                 throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber,"Expected all digits");
             }
 
-            /* Initialize parsing state */
+            // Initialize parsing state
             InitParsing(rawNumber);
-            /* Attempt to parse */
+            // Attempt to parse
             bool res = ParseLotteryTicket();
-            /* return result */
-            return res? this._numberListSoFar : null;
+            return res? _numberListSoFar : null;
         }
 
         #region State
@@ -116,7 +115,7 @@ namespace DialpadTest
         /// </summary>
         private void MoveNext()
         {
-            this._lastToken = GetNextToken();
+            _lastToken = GetNextToken();
             _parserState.NextIndex += 1;
         }
 
@@ -126,7 +125,7 @@ namespace DialpadTest
         /// <returns></returns>
         private int GetRemainingLength()
         {
-            return this._input.Length - this._parserState.NextIndex;
+            return _input.Length - _parserState.NextIndex;
         }
 
         /// <summary>
@@ -150,10 +149,8 @@ namespace DialpadTest
         /// <summary>
         /// Mainly used for debugging state. Ignore not used comment
         /// </summary>
-        private char NextToken
-        {
-            get { return this.GetNextToken(); }
-        }
+        // ReSharper disable once UnusedMember.Local
+        private char NextToken => GetNextToken();
 
         #region Parsing functions
 
@@ -184,7 +181,7 @@ namespace DialpadTest
         private bool ParseLotteryTicket()
         {
             if (_numberListSoFar.Count == LotteryNumberConstants.ExpectedLength ||
-                this.GetRemainingLength() == 0)
+                GetRemainingLength() == 0)
             {
                 // termination condition: we have reached max length or there are more characters to process
                 return ValidateFinalState();
@@ -192,12 +189,12 @@ namespace DialpadTest
 
             var initialState = _parserState; // to help with backtracking
 
-            char[] digits;
             for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)
             {
                 // restore to beginning of this function
                 RestoreSavedState(initialState);
 
+                char[] digits;
                 var res = MatchDigits(dCtr, out digits);
                 if (!res) return false;
 
@@ -207,9 +204,7 @@ namespace DialpadTest
                 res = ParseLotteryTicket();
                 if (res) return true;
             }
-
             return false;
-            
         }
 
         /// <summary>
@@ -225,7 +220,7 @@ namespace DialpadTest
                 var res = MatchDigit();
                 if (!res) return false;
 
-                matchedDigits.Add(this._lastToken);
+                matchedDigits.Add(_lastToken);
             }
 
             digits = matchedDigits.ToArray();
@@ -276,7 +271,7 @@ namespace DialpadTest
 
             //do unique check
             if (_numberListSoFar.Find(n => n.Equals(num)) != null) return false;
-            this._numberListSoFar.Add(num);
+            _numberListSoFar.Add(num);
             _parserState.NumbersSeen += 1;
             return true;
         }
