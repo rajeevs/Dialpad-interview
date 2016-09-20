@@ -64,7 +64,16 @@ namespace LotteryTests
         }
 
         [TestMethod]
-        public void TestQuestionInput()
+        public void TestDoubleDigitsComplex()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("4938532894754");
+            var expected = new string[] { "49", "38", "53", "28", "9", "47", "54" };
+            CheckParseResult(res, expected);
+        }
+
+        [TestMethod]
+        public void TestSampleCases()
         {
             string[] inputs = {"1", "42", "100848", "4938532894754", "1234567", "472844278465445"};
             string[][] expecteds =
@@ -76,6 +85,16 @@ namespace LotteryTests
                 new string[] { "1", "2", "3", "4", "5", "6", "7"},
                 null
             };
+
+            var zipped = inputs.Zip(expecteds, (x, y) => new Tuple<string, string[]>(x, y));
+            var lp = new LotteryParser();
+
+            foreach (var inOuts in zipped)
+            {
+                var res = lp.GetLotteryTicket(inOuts.Item1);
+                var expected = inOuts.Item2;
+                CheckParseResult(res, expected);
+            }
         }
 
         private void CheckParseResult(IEnumerable<LotteryNumber> num, string[] expected)
