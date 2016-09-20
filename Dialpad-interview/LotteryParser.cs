@@ -57,7 +57,7 @@ namespace DialpadTest
                 throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber, "Argument is null or whitespaces");
             }
 
-            if (rawNumber.Length < LotteryNumberConstants.ExpectedLength || rawNumber.Length > LotteryNumberConstants.MaxDigits * LotteryNumberConstants.ExpectedLength)
+            if (rawNumber.Length < LotteryNumberConstants.TicketLength || rawNumber.Length > LotteryNumberConstants.MaxDigits * LotteryNumberConstants.TicketLength)
             {
                 // too long or too short
                 return null;
@@ -143,7 +143,7 @@ namespace DialpadTest
         /// <returns>true if both conditions hold, else false</returns>
         private bool ValidateFinalState()
         {
-            return _numberListSoFar.Count == LotteryNumberConstants.ExpectedLength && GetRemainingLength() == 0;
+            return _numberListSoFar.Count == LotteryNumberConstants.TicketLength && GetRemainingLength() == 0;
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace DialpadTest
         /// <returns>true if it is a valid lottery number (this._numbersSoFar has the actual final split)</returns>
         private bool ParseLotteryTicket()
         {
-            if (_numberListSoFar.Count == LotteryNumberConstants.ExpectedLength ||
+            if (_numberListSoFar.Count == LotteryNumberConstants.TicketLength ||
                 GetRemainingLength() == 0)
             {
                 // termination condition: we have reached max length or there are more characters to process
@@ -190,7 +190,7 @@ namespace DialpadTest
 
             for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)
             {
-                // restore to beginning of this function
+                // restore to beginning of this function. Redundant 1st time but keeping it for simplicity
                 RestoreSavedState(initialState);
 
                 char[] digits;

@@ -8,7 +8,7 @@
         /// <summary>
         ///  Required Length of lottery ticket (in numbers)
         /// </summary>
-        public const int ExpectedLength = 7;
+        public const int TicketLength = 7;
 
         /// <summary>
         /// Maximum digits in a lottery number
