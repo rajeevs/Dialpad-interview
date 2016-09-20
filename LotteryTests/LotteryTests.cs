@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using DialpadTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -33,9 +36,31 @@ namespace LotteryTests
         {
             var lp = new LotteryParser();
             var res = lp.GetLotteryTicket("1234567");
-            Assert.AreNotEqual(null, res);
+            var expected = new string[] { "1", "2", "3", "4", "5", "6", "7" };
+            CheckParseResult(res, expected);
         }
 
+        [TestMethod]
+        public void TestDoubleDigits()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("12345678");
+            var expected = new string[] { "1", "2", "3", "4", "56", "7", "8" };
+            CheckParseResult(res, expected);
+        }
 
+        private void CheckParseResult(IEnumerable<LotteryNumber> num, string[] expected)
+        {
+            Assert.AreNotEqual(null, num);
+
+            var actual = num.Select(x => x.ToString()).ToArray();
+
+            Assert.AreEqual(actual.Length, expected.Length);
+
+            for (int i = 0; i < actual.Length; i++)
+            {
+                Assert.AreEqual(actual[i], expected[i]);
+            }
+        }
     }
 }

@@ -33,32 +33,6 @@ namespace DialpadTest
             return new string(_rawNumber.ToArray());
         }
 
-        /*
-        public LotteryNumber(char digit)
-        {
-            if(!IsDigit(digit))
-                throw new ArgumentOutOfRangeException(nameof(digit));
-
-            this.ConvertToDecimal();
-
-        }
-
-        public LotteryNumber(char tensDigit, char onesDigit)
-        {
-            if (!IsDigit(onesDigit))
-                throw new ArgumentOutOfRangeException(nameof(onesDigit));
-
-            if (!IsDigit(tensDigit))
-                throw new ArgumentOutOfRangeException(nameof(tensDigit));
-
-            if (tensDigit > '5')
-                throw new ArgumentOutOfRangeException(nameof(tensDigit));
-
-            this._rawNumber = new List<char> { tensDigit, onesDigit};
-            this._number = this.ConvertToDecimal();
-        }
-        */
-
         private int ConvertToDecimal()
         {
             int num = 0;
@@ -178,13 +152,14 @@ namespace DialpadTest
             bool res;
 
             //try one digit and matching the rest of it
+            restoreSavedState(savedState);
             res = ParseOneDigit();
             if (res) return true;
 
             // if first option doesn't work, clear the state from that attempt and try with 2 digits
             restoreSavedState(savedState);
             res = ParseTwoDigits();
-            //if (res) return true;
+            if (res) return true;
 
             return false;
         }
