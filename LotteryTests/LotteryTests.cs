@@ -14,9 +14,14 @@ namespace LotteryTests
         public void TestInvalidChars()
         {
             var lp = new LotteryParser();
-            var res = lp.GetLotteryTicket("abcdefgh");
-
-            Assert.AreEqual(null, res);
+            try
+            {
+                var res = lp.GetLotteryTicket("abcdefgh");
+                Assert.Fail();
+            }
+            catch(ArgumentException)
+            {
+            }
         }
 
         [TestMethod]
