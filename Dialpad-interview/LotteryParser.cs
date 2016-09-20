@@ -104,7 +104,7 @@ namespace DialpadTest
         /// </summary>
         /// <param name="rawNumbers">list of potential numeric strings</param>
         /// <returns>list of valid lottery numbers</returns>
-        public IEnumerable<IEnumerable<LotteryNumber>> GetLotteryTicket(string[] rawNumbers)
+        public IEnumerable<IEnumerable<LotteryNumber>> GetLotteryTickets(string[] rawNumbers)
         {
             if(rawNumbers == null)
                 throw new ArgumentNullException(nameof(rawNumbers));
@@ -124,6 +124,11 @@ namespace DialpadTest
             // the numbers should be between 1 and 59
             // numbers should be unique
 
+            if (String.IsNullOrWhiteSpace(rawNumber))
+            {
+                throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber, "Argument is null or whitespaces");
+            }
+
             if (rawNumber.Length < ExpectedLength || rawNumber.Length > MaxDigits * ExpectedLength)
             {
                 // too long or too short
@@ -132,7 +137,7 @@ namespace DialpadTest
 
             if (!rawNumber.All(d => LotteryNumber.IsDigit(d)))
             {
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(rawNumber), rawNumber,"Expected all digits");
             }
 
             /* Initialize parsing state */
