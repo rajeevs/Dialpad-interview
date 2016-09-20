@@ -9,7 +9,7 @@ namespace DialpadTest
         private readonly int _number;
         private readonly List<char> _rawNumber;
 
-        public LotteryNumber(params char[] digits)
+        private LotteryNumber(params char[] digits)
         {
             if(!digits.All(c => IsDigit(c)))
                 throw new ArgumentOutOfRangeException(nameof(digits));
@@ -17,6 +17,20 @@ namespace DialpadTest
             this._number = ConvertToDecimal();
             if(!this.Validate())
                 throw new ArgumentOutOfRangeException(nameof(digits));
+        }
+
+        public static bool Create(out LotteryNumber num, params char[] digits)
+        {
+            try
+            {
+                num = new LotteryNumber(digits);
+                return true;
+            }
+            catch (Exception)
+            {
+                num = null;
+                return false;
+            }
         }
 
         public override string ToString()
@@ -62,7 +76,14 @@ namespace DialpadTest
         /// </summary>
         internal struct ParserState
         {
+            /// <summary>
+            /// Numbers seen: If we've seen 49 25 45, this would be == 3
+            /// </summary>
             public int NumbersSeen;
+
+            /// <summary>
+            /// Index of next character in input array
+            /// </summary>
             public int NextIndex;
         }
 
@@ -122,12 +143,12 @@ namespace DialpadTest
             return res? this._numberListSoFar : null;
         }
 
-        /* STATE */
+        #region State
         private ParserState _parserState;
         private string _input;
         private List<LotteryNumber> _numberListSoFar;
         private char _lastToken;
-
+        #endregion
 
         /// <summary>
         /// Initialize the parsing state. Should be called before calling ParseLotteryTicket()
@@ -266,7 +287,9 @@ namespace DialpadTest
             if (!res) return false;
 
             // ACTION associated with digit
-            var num = new LotteryNumber(this._lastToken);
+            LotteryNumber num;
+            res = LotteryNumber.Create(out num, this._lastToken);
+            if (!res) return false;
             if (!AddLotteryNumber(num)) return false;
 
             // parse rest of the rule
@@ -294,7 +317,9 @@ namespace DialpadTest
             if (!res) return false;
             var onesdigit = this._lastToken;
 
-            var num = new LotteryNumber(tensdigit, onesdigit);
+            LotteryNumber num;
+            res = LotteryNumber.Create(out num, tensdigit, onesdigit);
+            if (!res) return false;
             if (!AddLotteryNumber(num)) return false;
 
             // parse rest of the rule

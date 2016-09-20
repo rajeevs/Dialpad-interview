@@ -72,6 +72,25 @@ namespace LotteryTests
             CheckParseResult(res, expected);
         }
 
+
+        [TestMethod]
+        public void TestDoubleDigitsWithZero()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("10723456");
+            var expected = new string[] { "1", "07", "2", "3", "4", "5", "6" };
+            CheckParseResult(res, expected);
+        }
+
+        [TestMethod]
+        public void TestDoubleDigitsWithZeroUnique()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("10123456");
+            var expected = new string[] { "10", "1", "2", "3", "4", "5", "6" };
+            CheckParseResult(res, expected);
+        }
+
         [TestMethod]
         public void TestSampleCases()
         {
@@ -97,6 +116,8 @@ namespace LotteryTests
             }
         }
 
+
+        #region helpers
         private void CheckParseResult(IEnumerable<LotteryNumber> num, string[] expected)
         {
             if (expected == null)
@@ -116,5 +137,7 @@ namespace LotteryTests
                 Assert.AreEqual(actual[i], expected[i]);
             }
         }
+
+        #endregion
     }
 }
