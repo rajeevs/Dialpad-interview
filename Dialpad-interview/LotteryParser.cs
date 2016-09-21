@@ -185,6 +185,13 @@ namespace DialpadTest
                 return ValidateFinalState();
             }
 
+            if (GetRemainingLength() >
+                LotteryNumberConstants.MaxDigits*(LotteryNumberConstants.TicketLength - _numberListSoFar.Count))
+            {
+                // more input to be processed than can be split across valid ticket numbers lengths
+                return false;
+            }
+
             var digits = new List<char>();
 
             for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)

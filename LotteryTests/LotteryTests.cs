@@ -77,6 +77,15 @@ namespace LotteryTests
             CheckParseResult(res, expected);
         }
 
+        //49385328941754
+        [TestMethod]
+        public void TestDoubleDigitsLongest()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("49385328194154");
+            var expected = new string[] { "49", "38", "53", "28", "19", "41", "54" };
+            CheckParseResult(res, expected);
+        }
 
         [TestMethod]
         public void TestSingleDigitsImpossible()
