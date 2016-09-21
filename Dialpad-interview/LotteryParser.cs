@@ -192,6 +192,12 @@ namespace DialpadTest
                 return false;
             }
 
+            if (GetRemainingLength() < LotteryNumberConstants.TicketLength - _numberListSoFar.Count)
+            {
+                // too few characters, cannot fill the slots. Example : 3 chars left, 5 ticket numbers to fill
+                return false;
+            }
+
             var digits = new List<char>();
 
             for (uint dCtr = 1; dCtr <= LotteryNumberConstants.MaxDigits; dCtr++)
