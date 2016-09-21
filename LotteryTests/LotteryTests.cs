@@ -79,6 +79,24 @@ namespace LotteryTests
 
 
         [TestMethod]
+        public void TestSingleDigitsImpossible()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("1234561"); // unique numbers, not possible
+            CheckParseResult(res, null);
+        }
+
+        [TestMethod]
+        public void TestDoubleDigitsImpossible()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("4938532894749");
+            CheckParseResult(res, null);
+        }
+
+
+
+        [TestMethod]
         public void TestDoubleDigitsWithZero()
         {
             var lp = new LotteryParser();
