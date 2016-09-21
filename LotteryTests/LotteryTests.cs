@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Remoting.Messaging;
 using DialpadTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -120,6 +121,42 @@ namespace LotteryTests
             var res = lp.GetLotteryTicket("10123456");
             var expected = new string[] { "10", "1", "2", "3", "4", "5", "6" };
             CheckParseResult(res, expected);
+        }
+
+        [TestMethod]
+        public void TestWhitespace()
+        {
+            var lp = new LotteryParser();
+            try
+            {
+                var res = lp.GetLotteryTicket("10 123456");
+                Assert.Fail();
+            }
+            catch (ArgumentException)
+            {
+            }
+        }
+
+        [TestMethod]
+        public void TestNegative()
+        {
+            var lp = new LotteryParser();
+            try
+            {
+                var res = lp.GetLotteryTicket("-10123456");
+                Assert.Fail();
+            }
+            catch (ArgumentException)
+            {
+            }
+        }
+
+        [TestMethod]
+        public void TestRepeatsFailure()
+        {
+            var lp = new LotteryParser();
+            var res = lp.GetLotteryTicket("53535857565554");
+            CheckParseResult(res, null);
         }
 
         [TestMethod]
