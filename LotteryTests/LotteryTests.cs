@@ -95,7 +95,6 @@ namespace LotteryTests
         }
 
 
-
         [TestMethod]
         public void TestDoubleDigitsWithZero()
         {
